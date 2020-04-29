@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'release'
+      - 'iac-140-gh-actions-test'
 
 jobs:
   LitmusAcceptance:
