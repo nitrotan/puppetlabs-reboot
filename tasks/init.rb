@@ -89,12 +89,16 @@ end
 
 # Actually run the reboot if we got piped input
 unless STDIN.tty?
-  reboot = Reboot::Task.new(JSON.parse(STDIN.read))
-  reboot.execute!
+  begin
+    reboot = Reboot::Task.new(JSON.parse(STDIN.read))
+    reboot.execute!
 
-  result = {
-    'status' => 'queued',
-    'timeout' => reboot.timeout,
-  }
-  JSON.dump(result, STDOUT)
+    result = {
+      'status' => 'queued',
+      'timeout' => reboot.timeout,
+    }
+    JSON.dump(result, STDOUT)
+  rescue JSON::ParserError
+    Puppet.warning('Task provided on STDIN is invalid JSON')
+  end
 end
